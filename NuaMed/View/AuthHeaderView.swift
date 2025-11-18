@@ -1,7 +1,6 @@
 import UIKit
 
 class AuthHeaderView: UIView {
-
     let titleLabel: UILabel = {
         let l = UILabel()
         l.text = "NuaMed"

@@ -138,7 +138,6 @@ class ProfileSetupView: UIView {
         button.addTarget(self, action: #selector(listButtonTapped(_:)), for: .touchUpInside)
     }
 
-
     override func layoutSubviews() {
         super.layoutSubviews()
         applyVerticalGradient(top: UIColor.systemBlue, bottom: UIColor.white)

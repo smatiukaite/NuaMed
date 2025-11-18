@@ -77,7 +77,6 @@ class ProfileSetupViewController: UIViewController, UITextFieldDelegate {
 }
 
 extension ProfileSetupViewController: ProfileSetupViewDelegate {
-
     func didTapOpenList(for type: String) {
         let items: [String]
         switch type {
@@ -163,7 +162,7 @@ extension ProfileSetupViewController: ProfileSetupViewDelegate {
         navigationController?.setViewControllers([imageCapture], animated: true)
     }
 
-
+    //MARK: Save user's profile result
     private func handleProfileSaveResult(err: Error?) {
         DispatchQueue.main.async {
             if let err = err {
@@ -171,15 +170,33 @@ extension ProfileSetupViewController: ProfileSetupViewDelegate {
             } else {
                 let alert = UIAlertController(title: "Success", message: "Profile saved successfully.", preferredStyle: .alert)
                 self.present(alert, animated: true) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        alert.dismiss(animated: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        alert.dismiss(animated: true){
+                            self.goToSearchPage()
+                        }
                     }
                 }
             }
         }
     }
 
-
+    //MARK: Helper class to go to Search page after user clicks on "Save User" button
+    private func goToSearchPage() {
+        guard
+            let windowScene = view.window?.windowScene,
+            let sceneDelegate = windowScene.delegate as? SceneDelegate,
+            let window = sceneDelegate.window
+        else { return }
+        
+        let tabBar = BottomTabBarController()
+        tabBar.selectedIndex = 1   // middle tab = Search
+        
+        //Animated transition
+        UIView.transition(with: window, duration: 0.3, options: [.transitionFlipFromRight], animations: {
+            window.rootViewController = tabBar
+        }, completion: nil)
+    }
+    
     private func promptForCredentialChange() {
         let alert = UIAlertController(title: "Change Credentials", message: "Choose what to change", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Change Email", style: .default) { _ in self.askCurrentPasswordAndNewEmail() })
@@ -215,7 +232,7 @@ extension ProfileSetupViewController: ProfileSetupViewDelegate {
                                     self.showAlert(title: "Taken", message: "Username already taken")
                                     return
                                 }
-
+                                
                                 FirebaseService.shared.updateUsername(uid: uid, newUsername: new) { err in
                                     if let err = err {
                                         self.showAlert(title: "Error", message: err.localizedDescription)
@@ -229,7 +246,7 @@ extension ProfileSetupViewController: ProfileSetupViewDelegate {
                 }
             }
         })
-
+        
         a.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(a, animated: true)
     }
@@ -287,7 +304,6 @@ extension ProfileSetupViewController: ListPopupDelegate {
 }
 
 extension ProfileSetupViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
     func didTapChooseImage() {
         let alert = UIAlertController(title: "Profile Image", message: "Choose an option", preferredStyle: .actionSheet)
         

@@ -39,15 +39,11 @@ extension UITextField {
     }
 }
 
-
 private struct AssociatedKeys {
     static var backActionKey = "backActionKey"
 }
 
 extension UIViewController {
-    
-    
-    
     func setupNavigationBar(title: String,
                             prefersLargeTitles: Bool = false,
                             backAction: (() -> Void)? = nil) {
@@ -94,8 +90,6 @@ extension UIViewController {
         navigationController?.navigationBar.addSubview(separator)
     }
     
-
-
     @objc private func backTapped() {
         if let action = objc_getAssociatedObject(self, &AssociatedKeys.backActionKey) as? () -> Void {
             action()

@@ -7,25 +7,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        window = UIWindow(windowScene: windowScene)
+        guard let windowScene = scene as? UIWindowScene else { return }
 
-        let rootVC: UIViewController
+        //Create a local non-optional window
+        let window = UIWindow(windowScene: windowScene)
 
         if let user = Auth.auth().currentUser {
-            // User is already logged in, go to Home
-            rootVC = ImageCaptureViewController()
-            print("User \(user.uid) is logged in, showing Home")
+            //User is logged in: show tab bar (Search as middle tab)
+            print("User \(user.uid) is logged in, showing Search")
+            window.rootViewController = BottomTabBarController()
         } else {
-            // Not logged in, show Login
-            rootVC = LoginViewController()
+            //Not logged in: show login inside nav
+            let loginVC = LoginViewController()
+            let nav = UINavigationController(rootViewController: loginVC)
+            nav.navigationBar.isTranslucent = false
+            window.rootViewController = nav
         }
 
-        let nav = UINavigationController(rootViewController: rootVC)
-        nav.navigationBar.isTranslucent = false
-
-        window?.rootViewController = nav
-        window?.makeKeyAndVisible()
+        //Store it on the property so the system keeps a strong reference
+        self.window = window
+        window.makeKeyAndVisible()
     }
 }
+
